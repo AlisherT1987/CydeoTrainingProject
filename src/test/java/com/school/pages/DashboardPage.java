@@ -1,7 +1,6 @@
 package com.school.pages;
 
-import com.school.pojo.cydeo.Student;
-import com.school.pojo.cydeo.Students;
+
 import com.school.utilities.Driver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -28,6 +27,8 @@ public class DashboardPage extends BasePage {
 
     @FindBy(xpath = "//img[@alt='Admin']")
     public WebElement image;
+    @FindBy(xpath = "//a[@href='all-students.html']")
+    public WebElement linkAllStudents;
 
 
 

@@ -5,25 +5,33 @@ Feature: Add new Student and verify from DB and API
     And login with valid credentials
     Then user on Dashboard page
     And click "Add Student" under "Students" module on left side of page
-Then fill out all student information on "Add Student" page
-  | Firstname     | Alisher              |
-  | Lastname      | King                 |
-  | Email         | AK@gmail.com         |
-  | Joining Date  | 04/06/2023           |
-  | Subject       | JAVA                 |
-  | Gender        | Male                 |
-  | Mobile number | 7771234568           |
-  | Birth Date    | 03/19/1987           |
-  | Batch         | 1                    |
-  | Major         | IT                   |
-  | Company Name  | Rainbow LLC          |
-  | Start Date    | 03/08/2022           |
-  | Street        | 777 Hard Road,apt 00 |
-  | State         | Hawaii               |
-  | Title         | Clean                |
-  | City          | Honolulu             |
-  | ZipCode       | 96815                |
+Then fill out all student information on "ADD STUDENT" page
+  | Firstname         | Anna                 |
+  | Lastname          | Queen                |
+  | Email             | AK@gmail.com         |
+  | Joining Date      | 04/06/2023           |
+  | Subject           | JAVA                 |
+  | Mobile number     | 7771234568           |
+  | Gender            | Female               |
+  | Birth Date        | 03/19/1987           |
+  | Major             | IT                   |
+  | Batch             | 15                   |
+  | Company Name      | Rainbow LLC          |
+  | Title             | Clean                |
+  | Start Date        | 03/08/2022           |
+  | City              | Honolulu             |
+  | Street            | 777 Hard Road,apt 00 |
+  | ZipCode           | 96815                |
+  | State             | Hawaii               |
+  | Permanent Address | Honolulu, Hawaii     |
+
   Then click "Submit" button
+  @ui
+    Scenario: verify Username
+      Given user on login page
+      And login with valid credentials
+      And user on Dashboard page
+    Then verify Username of new student on profile page
    @db
     Scenario: verify new Student information  from DB
     Given Establish the database connection
