@@ -84,10 +84,9 @@ public class AddNewStudentStepDefs {
 
     @Then("Verify DB information matching with UI part")
     public void verifyDBInformationMatchingWithUIPart() {
-        System.out.println(allDBStudentInfo);
-        System.out.println(uiStudentInfo);
-        System.out.println(actualUserName);
-        System.out.println(id);
+        Assert.assertEquals(uiStudentInfo.get("Firstname"), allDBStudentInfo.get("first_name"));
+        Assert.assertEquals(uiStudentInfo.get("Lastname"), allDBStudentInfo.get("last_name"));
+        Assert.assertEquals(uiStudentInfo.get("Batch"), String.valueOf(allDBStudentInfo.get("batch")));
 
     }
 
@@ -95,18 +94,18 @@ Map<String,String> allAPIStudents=new HashMap<>();
     @Given("I sent get request to {string} endpoint")
     public void iSentGetRequestToEndpoint(String endpoint) {
         response=given().accept(ContentType.JSON).pathParam("id", id).
-                when().get(Environment.BASE_URL+endpoint).prettyPeek().then().extract().response();
+                when().get(Environment.BASE_URL+endpoint).then().extract().response();
         JsonPath jsonPath = response.jsonPath();
 
         //Deserialize to Students class
-        Students students = jsonPath.getObject("", Students.class);
-        //we deserialize everything to Students class which is holding list of Student
-        System.out.println("===========================================");
-        System.out.println("students = " + students);
-        Student student1 = students.getStudents().get(0);
-        System.out.println("student1 = " + student1);
-        Student student =jsonPath.getObject("students[0]",Student.class );
-        System.out.println("student = " + student);
+       // Students students = jsonPath.getObject("", Students.class);
+       // we deserialize everything to Students class which is holding list of Student
+       // System.out.println("===========================================");
+       // System.out.println("students = " + students);
+       // Student student1 = students.getStudents().get(0);
+       // System.out.println("student1 = " + student1);
+       // Student student =jsonPath.getObject("students[0]",Student.class );
+       // System.out.println("student = " + student);
         allAPIStudents=jsonPath.getMap("students[0]");
 
 
@@ -114,8 +113,9 @@ Map<String,String> allAPIStudents=new HashMap<>();
 
     @Then("information about new student from api and DB should match")
     public void informationAboutNewStudentFromApiAndDBShouldMatch() {
-        System.out.println(allDBStudentInfo);
-        System.out.println(allAPIStudents);
+        Assert.assertEquals(allDBStudentInfo.get("first_name"), allAPIStudents.get("firstName"));
+        Assert.assertEquals(allDBStudentInfo.get("last_name"), allAPIStudents.get("lastName"));
+        Assert.assertEquals(allDBStudentInfo.get("student_id"), String.valueOf(allAPIStudents.get("studentId")));
 
 
 
