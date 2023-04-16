@@ -76,6 +76,9 @@ public class AddNewStudentStepDefs {
                 "where first_name='"+firstName+"'";
         DB_Util.runQuery(query);
        allDBStudentInfo=DB_Util.getRowMap(1);
+       DB_Util.runQuery("select student_id from students\n" +
+               "where first_name='"+firstName+"'");
+      id= Integer.parseInt(DB_Util.getFirstRowFirstColumn());
 
 
 
@@ -94,7 +97,6 @@ public class AddNewStudentStepDefs {
 
     @Given("I sent get request to {string} endpoint")
     public void iSentGetRequestToEndpoint(String endpoint) {
-        id=100;
         response=given().accept(ContentType.JSON).pathParam("id", id).
                 when().get(Environment.BASE_URL+endpoint).prettyPeek().then().extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -103,7 +105,13 @@ public class AddNewStudentStepDefs {
         Students students = jsonPath.getObject("", Students.class);
         //we deserialize everything to Students class which is holding list of Student
         System.out.println("students = " + students);
-        Student student = students.getStudents().get(0);
+        Student student1 = students.getStudents().get(0);
+        System.out.println("student1 = " + student1);
+        Student student =jsonPath.getObject("students[0]",Student.class );
+        System.out.println("student = " + student);
+        Map<String,Object> mapOfPojo=jsonPath.getMap("students[0]");
+        System.out.println("mapOfPojo = " + mapOfPojo);
+
     }
 
     @Then("information about new student from api and UI should match")

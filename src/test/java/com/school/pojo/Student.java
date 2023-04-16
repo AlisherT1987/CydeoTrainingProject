@@ -8,8 +8,14 @@ import lombok.Data;
 public class Student{
     
     private String firstName;
-    private int batch;
+    private String lastName;
+    private String joinDate;
+    private String subject;
+    private String gender;
+    private String birthDate;
     private String major;
+    private int batch;
+
     private Contact contact;
     private Company company;
 

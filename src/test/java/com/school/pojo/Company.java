@@ -7,5 +7,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class Company{
     private String companyName;
+    private String title;
+    private String startDate;
     private Address address;
 }
