@@ -36,6 +36,8 @@ public class StudentPage extends  BasePage {
 
    @FindBy(xpath = "//h3[contains(@class,'user-name')]")
    public WebElement userName;
+    @FindBy(xpath = "//li[contains(span,'Student ID:')]//a")
+    public WebElement studentID;
 
 
 

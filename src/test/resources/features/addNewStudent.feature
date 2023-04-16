@@ -1,3 +1,4 @@
+@wip
 Feature: Add new Student and verify from DB and API
   @ui
   Scenario:Add new Student on UI
@@ -25,17 +26,11 @@ Then fill out all student information on "ADD STUDENT" page
   | State             | Hawaii               |
   | Permanent Address | Honolulu, Hawaii     |
 
-  Then click "Submit" button
-  @ui
-    Scenario: verify Username
-      Given user on login page
-      And login with valid credentials
-      And user on Dashboard page
-    Then verify Username of new student on profile page
+  Then click "Submit" button and verify Username of new student on profile page
    @db
     Scenario: verify new Student information  from DB
     Given Establish the database connection
-      When Execute query to get all information using "Alex"
+      When Execute query to get all information using "Firstname"
       Then Verify DB information matching with UI part
 
       Scenario: verify new Student information from API

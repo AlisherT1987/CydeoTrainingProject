@@ -28,6 +28,7 @@ public class AddNewStudentStepDefs {
     Response response;
     String actualUserName;
     int id;
+    String firstName;
     @And("click {string} under {string} module on left side of page")
     public void clickUnderModuleOnLeftSideOfPage(String addStudent, String students) {
         BrowserUtils.waitFor(1);
@@ -41,49 +42,40 @@ public class AddNewStudentStepDefs {
     Map<String,String> uiStudentInfo=new HashMap<>();
 
     @Then("fill out all student information on {string} page")
-    public void fillOutAllStudentInformationOnPage(String addStudent, Map<String,String> newStudent) {
+    public void fillOutAllStudentInformationOnPage(String addStudent,Map<String,String> newStudent) {
         BrowserUtils.waitFor(1);
         Assert.assertEquals(addStudent, studentPage.header.getText());
         uiStudentInfo=newStudent;
         studentPage.validInputs(newStudent);
-        System.out.println(uiStudentInfo);
 
     }
-
-    @Then("click {string} button")
-    public void clickButton(String submit) {
-Assert.assertEquals(submit, studentPage.buttonSubmit.getText());
-BrowserUtils.waitFor(1);
+    @Then("click {string} button and verify Username of new student on profile page")
+    public void clickButtonAndVerifyUsernameOfNewStudentOnProfilePage(String submit) {
+        Assert.assertEquals(submit, studentPage.buttonSubmit.getText());
+        BrowserUtils.waitFor(1);
         studentPage.buttonSubmit.click();
-        BrowserUtils.waitFor(1);
-    }
-    @Then("verify Username of new student on profile page")
-    public void verifyOfNewStudentOnProfilePage() {
-        BrowserUtils.waitFor(1);
-        dashboardPage.linkStudents.click();
-        BrowserUtils.waitFor(1);
-dashboardPage.linkAllStudents.click();
-        BrowserUtils.waitFor(1);
+        BrowserUtils.waitFor(2);
         String expectedUserName = studentPage.searchStudent(uiStudentInfo.get("Firstname"));
         actualUserName=uiStudentInfo.get("Firstname")+" "+uiStudentInfo.get("Lastname");
+        id= Integer.parseInt(studentPage.studentID.getText());
         BrowserUtils.waitFor(2);
         Assert.assertEquals(expectedUserName, actualUserName);
-
-
-
+        firstName=uiStudentInfo.get("Firstname");
     }
+
 
     @Given("Establish the database connection")
     public void establishTheDatabaseConnection() {
 
     }
-    List<Map<String,String>> allDBStudentInfo=new ArrayList<>();
+    Map<String,String> allDBStudentInfo=new HashMap<>();
     @When("Execute query to get all information using {string}")
     public void executeQueryToGetAllInformationUsing(String student) {
+        firstName="Anna";
         String query="select first_name as \"Firstname\",last_name as \"Lastname\",email_address as \"Email\",join_date as \"Joining Date\",subject as \"Subject\",phone as \"Mobile number\",gender as \"Gender\",birth_date as \"Birth Date\",major as \"Major\",batch as \"Batch\",company_name as \"Company Name\",title as \"Title\",start_date as \"Start date\",city as \"City\",street as \"Street\",zip_code as \"ZipCode\",state as \"State\",permanent_address \"Permanent Address\"  from students s join companies c on s.student_id = c.student_id join address a on c.company_id = a.company_id join contacts c2 on s.student_id = c2.student_id\n" +
-                "where first_name='"+student+"';";
+                "where first_name='"+firstName+"'";
         DB_Util.runQuery(query);
-       allDBStudentInfo=DB_Util.getAllRowAsListOfMap();
+       allDBStudentInfo=DB_Util.getRowMap(1);
 
 
 
@@ -99,19 +91,26 @@ dashboardPage.linkAllStudents.click();
 
     }
 
+
     @Given("I sent get request to {string} endpoint")
     public void iSentGetRequestToEndpoint(String endpoint) {
-        response=given().accept(ContentType.JSON).pathParam("id", 97).
+        id=100;
+        response=given().accept(ContentType.JSON).pathParam("id", id).
                 when().get(Environment.BASE_URL+endpoint).prettyPeek().then().extract().response();
+        JsonPath jsonPath = response.jsonPath();
+
+        //Deserialize to Students class
+        Students students = jsonPath.getObject("", Students.class);
+        //we deserialize everything to Students class which is holding list of Student
+        System.out.println("students = " + students);
+        Student student = students.getStudents().get(0);
     }
 
     @Then("information about new student from api and UI should match")
     public void informationAboutNewStudentFromApiAndUIShouldMatch() {
-        JsonPath jsonPath = response.jsonPath();
-        Students students = jsonPath.getObject("", Students.class);
-        for (Student student : students.students) {
-            System.out.println(student);
-        }
+
 
     }
+
+
 }
