@@ -1,6 +1,6 @@
 @wip
 Feature: Add new Student and verify from DB and API
-  @ui
+  @db @ui
   Scenario:Add new Student on UI
     Given user on login page
     And login with valid credentials
@@ -27,15 +27,11 @@ Then fill out all student information on "ADD STUDENT" page
   | Permanent Address | Honolulu, Hawaii     |
 
   Then click "Submit" button and verify Username of new student on profile page
-   @db
-    Scenario: verify new Student information  from DB
     Given Establish the database connection
-      When Execute query to get all information using "Firstname"
+      When Execute query to get all information using firstname
       Then Verify DB information matching with UI part
-
-      Scenario: verify new Student information from API
         Given I sent get request to "/student/{id}" endpoint
-        Then information about new student from api and UI should match
+        Then information about new student from api and DB should match
 
 
 
