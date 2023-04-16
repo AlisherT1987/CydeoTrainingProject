@@ -45,7 +45,7 @@ public class AddNewStudentStepDefs {
     public void fillOutAllStudentInformationOnPage(String addStudent,Map<String,String> newStudent) {
         BrowserUtils.waitFor(1);
         Assert.assertEquals(addStudent, studentPage.header.getText());
-        uiStudentInfo=newStudent;
+        this.uiStudentInfo.putAll(newStudent);
         studentPage.validInputs(newStudent);
 
     }
@@ -56,11 +56,11 @@ public class AddNewStudentStepDefs {
         studentPage.buttonSubmit.click();
         BrowserUtils.waitFor(2);
         String expectedUserName = studentPage.searchStudent(uiStudentInfo.get("Firstname"));
-        actualUserName=uiStudentInfo.get("Firstname")+" "+uiStudentInfo.get("Lastname");
+        this.actualUserName=uiStudentInfo.get("Firstname")+" "+uiStudentInfo.get("Lastname");
         id= Integer.parseInt(studentPage.studentID.getText());
         BrowserUtils.waitFor(2);
         Assert.assertEquals(expectedUserName, actualUserName);
-        firstName=uiStudentInfo.get("Firstname");
+        this.firstName=uiStudentInfo.get("Firstname");
     }
 
 
@@ -75,10 +75,10 @@ public class AddNewStudentStepDefs {
         String query="select first_name as \"Firstname\",last_name as \"Lastname\",email_address as \"Email\",join_date as \"Joining Date\",subject as \"Subject\",phone as \"Mobile number\",gender as \"Gender\",birth_date as \"Birth Date\",major as \"Major\",batch as \"Batch\",company_name as \"Company Name\",title as \"Title\",start_date as \"Start date\",city as \"City\",street as \"Street\",zip_code as \"ZipCode\",state as \"State\",permanent_address \"Permanent Address\"  from students s join companies c on s.student_id = c.student_id join address a on c.company_id = a.company_id join contacts c2 on s.student_id = c2.student_id\n" +
                 "where first_name='"+firstName+"'";
         DB_Util.runQuery(query);
-       allDBStudentInfo=DB_Util.getRowMap(1);
+       this.allDBStudentInfo=DB_Util.getRowMap(1);
        DB_Util.runQuery("select student_id from students\n" +
                "where first_name='"+firstName+"'");
-      id= Integer.parseInt(DB_Util.getFirstRowFirstColumn());
+      this.id= Integer.parseInt(DB_Util.getFirstRowFirstColumn());
 
 
 
@@ -91,13 +91,15 @@ public class AddNewStudentStepDefs {
     public void verifyDBInformationMatchingWithUIPart() {
         System.out.println(allDBStudentInfo);
         System.out.println(uiStudentInfo);
+        System.out.println(actualUserName);
+        System.out.println(id);
 
     }
 
 
     @Given("I sent get request to {string} endpoint")
     public void iSentGetRequestToEndpoint(String endpoint) {
-        response=given().accept(ContentType.JSON).pathParam("id", id).
+        response=given().accept(ContentType.JSON).pathParam("id", 100).
                 when().get(Environment.BASE_URL+endpoint).prettyPeek().then().extract().response();
         JsonPath jsonPath = response.jsonPath();
 
