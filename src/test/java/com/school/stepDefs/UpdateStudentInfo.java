@@ -1,6 +1,7 @@
 package com.school.stepDefs;
 
 import com.github.javafaker.Faker;
+import com.school.pages.StudentPageAPK;
 import com.school.utilities.BrowserUtils;
 import com.school.utilities.DB_Util;
 import com.school.utilities.Driver;
@@ -26,17 +27,19 @@ public class UpdateStudentInfo {
     String emailUI=faker.internet().emailAddress();
     String emailAPI;
     String emailDB;
+    StudentPageAPK studentPageAPK=new StudentPageAPK();
 
     @Given("Student on {string} page")
-    public void student_on_page(String string) {
+    public void student_on_page(String page) {
+        Assert.assertEquals(page, studentPageAPK.headerName.getText());
 
     }
     @Given("type id in {string} search box")
-    public void type_id_in_search_box(String string) {
-        BrowserUtils.waitFor(2);
-        WebElement studentName= Driver.get().findElement(By.tagName("input"));
-        studentName.sendKeys(id+ Keys.ENTER);
-        BrowserUtils.waitFor(2);
+    public void type_id_in_search_box(String studentID) {
+        BrowserUtils.waitFor(1);
+        Assert.assertEquals(studentID, studentPageAPK.studentID.getText());
+        studentPageAPK.studentName.sendKeys(id+ Keys.ENTER);
+        BrowserUtils.waitFor(1);
 
     }
     @Given("click {string} button")
@@ -49,16 +52,15 @@ public class UpdateStudentInfo {
 
     @Given("click edit button on student information row")
     public void click_edit_button_on_student_information_row() {
-        WebElement editBtn=Driver.get().findElement(By.xpath("//a[@href='edit-student.html?studentId=116']"));
-        editBtn.click();
+       studentPageAPK.editBtn.click();
         BrowserUtils.waitFor(2);
 
     }
     @And("delete existing email and put new email address")
     public void deleteExistingEmailAndPutNewEmailAddress() {
-        WebElement email=Driver.get().findElement(By.xpath("//label[.='Email']/..//input"));
-        email.clear();
-        email.sendKeys(emailUI);
+
+        studentPageAPK.email.clear();
+        studentPageAPK.email.sendKeys(emailUI);
         BrowserUtils.waitFor(2);
     }
     @And("after click {string} button")
@@ -86,8 +88,8 @@ public class UpdateStudentInfo {
         emailDB=DB_Util.getFirstRowFirstColumn();
     }
 
-    @Then("compare all datas from DB and UI and API and should be match")
-    public void compareAllDatasFromDBAndUIAndAPIAndShouldBeMatch() {
+    @Then("compare all data from DB and UI and API and should be match")
+    public void compareAllDataFromDBAndUIAndAPIAndShouldBeMatch() {
         System.out.println("emailDB = " + emailDB);
         System.out.println("emailUI = " + emailUI);
         System.out.println("emailAPI = " + emailAPI);

@@ -11,4 +11,4 @@ Feature: Update student information through mobile phone
     And get email address from API
     And Establish the database connection
     And get email address from DB by using id
-    Then compare all datas from DB and UI and API and should be match
+    Then compare all data from DB and UI and API and should be match
