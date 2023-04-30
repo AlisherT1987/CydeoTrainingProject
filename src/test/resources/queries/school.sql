@@ -4,4 +4,6 @@ select student_id from students
 where first_name='Anna';
 select * from students left outer join companies c on students.student_id = c.student_id
 where first_name='Anna';
+select email_address from contacts
+where student_id=116;
 
