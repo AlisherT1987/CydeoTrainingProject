@@ -1,6 +1,8 @@
 package com.school.utilities;
 
 
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.remote.MobileCapabilityType;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
@@ -14,6 +16,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -29,7 +32,7 @@ public class Driver {
     // driver class will provide separate webdriver object per thread
     private static InheritableThreadLocal<WebDriver> driverPool = new InheritableThreadLocal<>();
 
-    public static WebDriver get() {
+    public static WebDriver get()  {
         //if this thread doesn't have driver - create it and add to pool
         if (driverPool.get() == null) {
 
@@ -55,6 +58,24 @@ public class Driver {
                 case "chrome":
                     WebDriverManager.chromedriver().setup();
                     driverPool.set(new ChromeDriver());
+                    break;
+                case "android":
+                    DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
+                    desiredCapabilities.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2");
+                    desiredCapabilities.setCapability(MobileCapabilityType.DEVICE_NAME, "Pixel 3");
+                    desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
+                    desiredCapabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, "10.0");
+                    desiredCapabilities.setCapability(MobileCapabilityType.BROWSER_NAME, "Chrome");
+
+
+                    try {
+                        URL url = new URL("http://localhost:4723/wd/hub");
+                        WebDriverManager.chromedriver().setup();
+                        driverPool.set(new RemoteWebDriver(url,desiredCapabilities));
+
+                    } catch (Exception e) { e.printStackTrace();
+
+                    }
                     break;
                 case "chrome-headless":
                     WebDriverManager.chromedriver().setup();
